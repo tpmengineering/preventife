@@ -123,7 +123,7 @@
         <button class="btn-upload" onclick="uploadFiles()">SUBMIT</button>
         
         <!-- Catatan -->
-        <p style="font-size:10px;">Catatan: Tetap berada di layar ini hingga tampil teks <span class="font-weight: bold;">"Files uploaded successfully!"</span></p>
+        <p style="font-size:10px;">Catatan: Tetap berada di layar ini hingga tampil teks <span style="font-weight: bold;">"Files uploaded successfully!"</span></p>
         
         <!-- Response message -->
         <div id="response" class="response"></div>
@@ -162,7 +162,7 @@
 }
 
 function sendToServer(base64Data1, fileName1, base64Data2, fileName2, uploadButton) {
-    var url = 'https://script.google.com/macros/s/AKfycbz-ipmERznSLYhySxVXFRHo75qJ06UdwrrpM0_nNDLJmBiaW36JM9FwTfrvZbdnuSMSBQ/exec'; // Replace with your Apps Script URL
+    var url = 'https://script.google.com/macros/s/AKfycbwo7b_QZhPcJixbu9tU5buNSCbaad24b0G670Ki9C8CmKkxeLgAhPgbSaI19GRD4uZ_dQ/exec'; // Replace with your Apps Script URL
     var formData = new FormData();
     formData.append('file1', base64Data1);
     formData.append('fileName1', fileName1);
