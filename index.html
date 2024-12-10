@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintify1.0</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        .upload-container {
+            margin: 0 auto;
+            max-width: 600px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 16px;
+            color: #1f319d;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #94cf2d;
+            text-align: left;
+        }
+
+        .input-file {
+            margin-bottom: 14px;
+            display: block;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            font-size: 1.1rem;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+
+        input[type="file"]:hover {
+            border-color: #007bff;
+        }
+
+        .btn-upload {
+            margin-top: 10px;
+            background-color: #1f319d;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-upload:hover {
+            background-color: #94cf2d;
+        }
+
+        .response {
+            margin-top: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Responsive design */
+        @media screen and (max-width: 768px) {
+            .upload-container {
+                padding: 20px;
+                width: 80%;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            .input-file input[type="file"] {
+                font-size: 8px;
+                padding: 8px;
+            }
+
+            .btn-upload {
+                font-size: 14px;
+                padding: 12px 0;
+                margin-top: 15px;
+                font-weight: bold;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h2>UNGGAH DOKUMENTASI</h2>
+
+        <!-- Label and Input for first file (before) -->
+        <label for="fileInput1">SEBELUM</label>
+        <input type="file" id="fileInput1" accept="image/*" class="input-file">
+        
+        <!-- Label and Input for second file (after) -->
+        <label for="fileInput2">SESUDAH</label>
+        <input type="file" id="fileInput2" accept="image/*" class="input-file">
+        
+        <!-- Upload Button -->
+        <button class="btn-upload" onclick="uploadFiles()">SUBMIT</button>
+        
+        <!-- Catatan -->
+        <p style="font-size:10px;">Catatan: Tetap berada di layar ini hingga tampil teks <span class="font-weight: bold;">"Files uploaded successfully!"</span></p>
+        
+        <!-- Response message -->
+        <div id="response" class="response"></div>
+    </div>
+
+    <script>
+        function uploadFiles() {
+    var fileInput1 = document.getElementById('fileInput1');
+    var fileInput2 = document.getElementById('fileInput2');
+    var uploadButton = document.querySelector('.btn-upload');
+    
+    // Disable button to prevent multiple clicks
+    uploadButton.disabled = true;
+
+    var file1 = fileInput1.files[0];
+    var file2 = fileInput2.files[0];
+
+    if (file1 && file2) {
+        // Mengirimkan dua file dalam satu request
+        var reader1 = new FileReader();
+        reader1.onloadend = function () {
+            var base64Data1 = reader1.result.split(',')[1];
+
+            var reader2 = new FileReader();
+            reader2.onloadend = function () {
+                var base64Data2 = reader2.result.split(',')[1];
+                sendToServer(base64Data1, file1.name, base64Data2, file2.name, uploadButton);
+            };
+            reader2.readAsDataURL(file2);
+        };
+        reader1.readAsDataURL(file1);
+    } else {
+        alert("Please select two files to upload.");
+        uploadButton.disabled = false; // Re-enable button if files are not selected
+    }
+}
+
+function sendToServer(base64Data1, fileName1, base64Data2, fileName2, uploadButton) {
+    var url = 'https://script.google.com/macros/s/AKfycbz-ipmERznSLYhySxVXFRHo75qJ06UdwrrpM0_nNDLJmBiaW36JM9FwTfrvZbdnuSMSBQ/exec'; // Replace with your Apps Script URL
+    var formData = new FormData();
+    formData.append('file1', base64Data1);
+    formData.append('fileName1', fileName1);
+    formData.append('file2', base64Data2);
+    formData.append('fileName2', fileName2);
+
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('response').innerText = 'Files uploaded successfully!';
+            uploadButton.disabled = false; // Re-enable button after successful upload
+        })
+        .catch(error => {
+            document.getElementById('response').innerText = 'Error uploading files.';
+            console.error('Error:', error);
+            uploadButton.disabled = false; // Re-enable button if an error occurs
+        });
+}
+
+    </script>
+</body>
+</html>
